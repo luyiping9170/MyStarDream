@@ -13,21 +13,21 @@ public class VariablePool {
 	}
 	
 	/**
-	 * 	¸ù¾İArduinoIDºÍstatusListÍê³É¸üĞÂ
+	 * 	æ ¹æ®ArduinoIDå’ŒstatusListå®Œæˆæ›´æ–°
 	 * @param ArduinoID
 	 * @param statusList
 	 */
 	public void updateFromArduino(int ArduinoID, ArrayList<Character> statusList) {
-		// TODO ×Ô¶¯Éú³ÉµÄ·½·¨´æ¸ù
+		// TODO è‡ªåŠ¨ç”Ÿæˆçš„æ–¹æ³•å­˜æ ¹
 		
 	}
 	
 	/**
-	 *  ¸ù¾İArduinoID¸üĞÂÊ±¼ä´Á
+	 *  æ ¹æ®ArduinoIDæ›´æ–°æ—¶é—´æˆ³
 	 * @param ArduinoID
 	 */
 	public void updateFromArduino(int ArduinoID) {
-		// TODO ×Ô¶¯Éú³ÉµÄ·½·¨´æ¸ù
+		// TODO è‡ªåŠ¨ç”Ÿæˆçš„æ–¹æ³•å­˜æ ¹
 		
 	}
 	

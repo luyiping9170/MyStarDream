@@ -20,16 +20,16 @@ public class SerialConnector implements SerialPortEventListener {
 	/** Default bits per second for COM port. */
 	private static final int DATA_RATE = 9600;
 
-	// COM×´Ì¬¶¨Òå
-	public final static int COM_NOT_INIT = 10;// ³Ö¾Ã×´Ì¬£¬ÉĞÎ´init
-	public final static int COM_WORK = 11;// ³Ö¾Ã×´Ì¬£¬´®¿ÚÕı³£¹¤×÷
-	public final static int COM_CLOSE = 12;// ³Ö¾Ã×´Ì¬£¬´®¿ÚÎ´´ò¿ª
-	public final static int COM_NOT_EXIST = 13;// ³Ö¾Ã×´Ì¬£¬´®¿Ú²»´æÔÚ
-	public final static int COM_NOT_OWNED = 14;// ³Ö¾Ã×´Ì¬£¬´®¿Ú±»Õ¼ÓÃ
-	// ·µ»Ø¡¢»Øµ÷ÀàĞÍ
-	public final static int DATA_UPDATE = 30;// ÁãÊ±×´Ì¬£¬½öÓÃÓÚ»Øµ÷£¬±íÊ¾ÓĞÊı¾İ¸üĞÂ
-	public final static int COM_FAIL = 31;// ÁãÊ±×´Ì¬£¬±íÊ¾µ±Ç°ÈÎÎñÊ§°Ü
-	public final static int COM_SENDED = 32;// ÁãÊ±×´Ì¬£¬±íÊ¾µ±Ç°ÈÎÎñ³É¹¦
+	// COMçŠ¶æ€å®šä¹‰
+	public final static int COM_NOT_INIT = 10;// æŒä¹…çŠ¶æ€ï¼Œå°šæœªinit
+	public final static int COM_WORK = 11;// æŒä¹…çŠ¶æ€ï¼Œä¸²å£æ­£å¸¸å·¥ä½œ
+	public final static int COM_CLOSE = 12;// æŒä¹…çŠ¶æ€ï¼Œä¸²å£æœªæ‰“å¼€
+	public final static int COM_NOT_EXIST = 13;// æŒä¹…çŠ¶æ€ï¼Œä¸²å£ä¸å­˜åœ¨
+	public final static int COM_NOT_OWNED = 14;// æŒä¹…çŠ¶æ€ï¼Œä¸²å£è¢«å ç”¨
+	// è¿”å›ã€å›è°ƒç±»å‹
+	public final static int DATA_UPDATE = 30;// é›¶æ—¶çŠ¶æ€ï¼Œä»…ç”¨äºå›è°ƒï¼Œè¡¨ç¤ºæœ‰æ•°æ®æ›´æ–°
+	public final static int COM_FAIL = 31;// é›¶æ—¶çŠ¶æ€ï¼Œè¡¨ç¤ºå½“å‰ä»»åŠ¡å¤±è´¥
+	public final static int COM_SENDED = 32;// é›¶æ—¶çŠ¶æ€ï¼Œè¡¨ç¤ºå½“å‰ä»»åŠ¡æˆåŠŸ
 
 	/** The port we're normally going to use. */
 	/**
@@ -47,47 +47,47 @@ public class SerialConnector implements SerialPortEventListener {
 	private ArduinoController myObserver;
 	
 	/**
-	 * ¹¹Ôìº¯Êı£¬×¢²á¹Û²ìÕß
+	 * æ„é€ å‡½æ•°ï¼Œæ³¨å†Œè§‚å¯Ÿè€…
 	 * 
 	 * @param observer
-	 *            ¹Û²ìÕß¶ÔÏó
+	 *            è§‚å¯Ÿè€…å¯¹è±¡
 	 */
 	public SerialConnector(ArduinoController observer) {
 		myObserver = observer;
 	}
 
 	/**
-	 * ¸ù¾İportname³õÊ¼»¯
+	 * æ ¹æ®portnameåˆå§‹åŒ–
 	 * 
 	 * @param portname
-	 * @return ´®¿Ú³¢ÊÔ³õÊ¼»¯ºóµÄ×´Ì¬
+	 * @return ä¸²å£å°è¯•åˆå§‹åŒ–åçš„çŠ¶æ€
 	 */
 	public synchronized int init(String portname) {
 		return initialize(portname);
 	}
 
 	/**
-	 * ´ò¿ªcom¿Ú
+	 * æ‰“å¼€comå£
 	 * 
-	 * @return ´®¿Ú³¢ÊÔ´ò¿ªºóµÄ×´Ì¬
+	 * @return ä¸²å£å°è¯•æ‰“å¼€åçš„çŠ¶æ€
 	 */
 	public synchronized int open() {
 		return openSerial();
 	}
 
 	/**
-	 * ¹Ø±Õcom¿Ú
+	 * å…³é—­comå£
 	 * 
-	 * @return ´®¿Ú³¢ÊÔ¹Ø±ÕºóµÄ×´Ì¬
+	 * @return ä¸²å£å°è¯•å…³é—­åçš„çŠ¶æ€
 	 */
 	public synchronized int close() {
 		return closeSerial();
 	}
 
 	/**
-	 * ½ö¹©COM_NOT_EXIST¼°COM_OWNEDÊ±ÖØÊÔ
+	 * ä»…ä¾›COM_NOT_EXISTåŠCOM_OWNEDæ—¶é‡è¯•
 	 * 
-	 * @return ´®¿Ú³¢ÊÔÖØÊÔºóµÄ×´Ì¬
+	 * @return ä¸²å£å°è¯•é‡è¯•åçš„çŠ¶æ€
 	 */
 	public synchronized int retry() {
 		initialize(portName);
@@ -95,13 +95,13 @@ public class SerialConnector implements SerialPortEventListener {
 	}
 
 	/**
-	 * »ñµÃreadList£¬°´Ê±¼äÅÅĞò
+	 * è·å¾—readListï¼ŒæŒ‰æ—¶é—´æ’åº
 	 * 
-	 * @return readList¸±±¾
+	 * @return readListå‰¯æœ¬
 	 */
 	public ArrayList<String> read() {
 		ArrayList<String> newReadList = new ArrayList<String>();
-		// ¶ÔserialReadList²Ù×÷Ç°ĞèÒªÏÈ»ñµÃËø
+		// å¯¹serialReadListæ“ä½œå‰éœ€è¦å…ˆè·å¾—é”
 		synchronized (serialReadList) {
 			newReadList.addAll(serialReadList);
 			serialReadList.clear();
@@ -110,11 +110,11 @@ public class SerialConnector implements SerialPortEventListener {
 	}
 
 	/**
-	 * ·¢ËÍĞÅÏ¢
+	 * å‘é€ä¿¡æ¯
 	 * 
 	 * @param controlid
-	 *            ·¢ËÍµÄÖ¸Áî£¨ĞèÒªÒÑ×öĞ£Ñé£©
-	 * @return ´®¿Ú·¢ËÍÖ¸ÁîºóµÄ×´Ì¬
+	 *            å‘é€çš„æŒ‡ä»¤ï¼ˆéœ€è¦å·²åšæ ¡éªŒï¼‰
+	 * @return ä¸²å£å‘é€æŒ‡ä»¤åçš„çŠ¶æ€
 	 */
 	public int write(String controlid) {
 		if (portStatus == COM_WORK) {
@@ -136,7 +136,7 @@ public class SerialConnector implements SerialPortEventListener {
 		if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 			String inputLine;
 			try {
-				// ¶ÔserialReadList²Ù×÷Ç°ĞèÒªÏÈ»ñµÃËø
+				// å¯¹serialReadListæ“ä½œå‰éœ€è¦å…ˆè·å¾—é”
 				synchronized (serialReadList) {
 					while ((inputLine = input.readLine()) != null) {
 						serialReadList.add(inputLine);
@@ -151,7 +151,7 @@ public class SerialConnector implements SerialPortEventListener {
 				setComStatus(e);
 			}
 		}
-		// ¶ÔÓÚcomÒì³£ÉĞÎ´×ö¾ßÌå´¦Àí*********************
+		// å¯¹äºcomå¼‚å¸¸å°šæœªåšå…·ä½“å¤„ç†*********************
 		// else{
 		// System.out.print("COM_FAIL");
 		// updateObserver();
@@ -159,15 +159,15 @@ public class SerialConnector implements SerialPortEventListener {
 	}
 
 	/**
-	 * ³¢ÊÔ¸ù¾İPORT_NAME³õÊ¼»¯
+	 * å°è¯•æ ¹æ®PORT_NAMEåˆå§‹åŒ–
 	 * @param portname
 	 * 
-	 * @return ´®¿Ú³¢ÊÔ³õÊ¼»¯ºóµÄ×´Ì¬
+	 * @return ä¸²å£å°è¯•åˆå§‹åŒ–åçš„çŠ¶æ€
 	 */
 	private int initialize(String portname) {
 		System.out.print(portName + " try init when" + portStatus);
 		
-		// portnameÎª¿ÕÊ±ÒÔ¿Õ×Ö·û´®´¦Àí£¬È·±£²»»á·µ»Øcom_not_init×´Ì¬
+		// portnameä¸ºç©ºæ—¶ä»¥ç©ºå­—ç¬¦ä¸²å¤„ç†ï¼Œç¡®ä¿ä¸ä¼šè¿”å›com_not_initçŠ¶æ€
 		portName=(portname!=null)?portname:"";
 		
 		if (portStatus != COM_NOT_INIT) {
@@ -188,7 +188,7 @@ public class SerialConnector implements SerialPortEventListener {
 			}
 		}
 		if (portId == null) {
-			System.out.println("Could not find COM port£º" + portName);
+			System.out.println("Could not find COM portï¼š" + portName);
 			return setComStatus(COM_NOT_EXIST);
 		} else {
 			return setComStatus(COM_CLOSE);
@@ -196,9 +196,9 @@ public class SerialConnector implements SerialPortEventListener {
 	}
 
 	/**
-	 * ³¢ÊÔ´ò¿ªcom¿Ú
+	 * å°è¯•æ‰“å¼€comå£
 	 * 
-	 * @return ´®¿Ú³¢ÊÔ´ò¿ªºóµÄ×´Ì¬
+	 * @return ä¸²å£å°è¯•æ‰“å¼€åçš„çŠ¶æ€
 	 */
 	private int openSerial() {
 		System.out.print(portName + " try open when" + portStatus);
@@ -231,9 +231,9 @@ public class SerialConnector implements SerialPortEventListener {
 	}
 
 	/**
-	 * ³¢ÊÔ¹Ø±Õcom¿Ú
+	 * å°è¯•å…³é—­comå£
 	 * 
-	 * @return ´®¿Ú³¢ÊÔ¹Ø±ÕºóµÄ×´Ì¬
+	 * @return ä¸²å£å°è¯•å…³é—­åçš„çŠ¶æ€
 	 */
 	private int closeSerial() {
 		System.out.print(portName + " try close when" + portStatus);
@@ -249,7 +249,7 @@ public class SerialConnector implements SerialPortEventListener {
 			serialPort.close();
 			serialPort = null;
 		}
-		// ¶ÔserialReadList²Ù×÷Ç°ĞèÒªÏÈ»ñµÃËø
+		// å¯¹serialReadListæ“ä½œå‰éœ€è¦å…ˆè·å¾—é”
 		synchronized (serialReadList) {
 			serialReadList.clear();
 		}
@@ -257,22 +257,22 @@ public class SerialConnector implements SerialPortEventListener {
 	}
 
 	/**
-	 * ÉèÖÃµ±Ç°×´Ì¬
+	 * è®¾ç½®å½“å‰çŠ¶æ€
 	 * 
 	 * @param currentStatus
-	 *            ´®¿Ú³Ö¾Ã×´Ì¬
-	 * @return ´®¿Ú³Ö¾Ã×´Ì¬
+	 *            ä¸²å£æŒä¹…çŠ¶æ€
+	 * @return ä¸²å£æŒä¹…çŠ¶æ€
 	 */
 	private int setComStatus(int currentStatus) {
 		return portStatus = currentStatus;
 	}
 
 	/**
-	 * ¶Ôexception½øĞĞ´¦Àí£¬ÉèÖÃµ±Ç°×´Ì¬
+	 * å¯¹exceptionè¿›è¡Œå¤„ç†ï¼Œè®¾ç½®å½“å‰çŠ¶æ€
 	 * 
 	 * @param e
-	 *            Òì³£
-	 * @return ´®¿Ú³Ö¾Ã×´Ì¬/ÁãÊ±µÄCOM_FAIL×´Ì¬
+	 *            å¼‚å¸¸
+	 * @return ä¸²å£æŒä¹…çŠ¶æ€/é›¶æ—¶çš„COM_FAILçŠ¶æ€
 	 */
 	private int setComStatus(Exception e) {
 		if (e instanceof gnu.io.PortInUseException) {
@@ -286,7 +286,7 @@ public class SerialConnector implements SerialPortEventListener {
 	}
 
 	/**
-	 * Í¨Öª¹Û²ìÕß
+	 * é€šçŸ¥è§‚å¯Ÿè€…
 	 * 
 	 * @param type
 	 */

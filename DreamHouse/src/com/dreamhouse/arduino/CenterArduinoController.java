@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
- * CenterArduinoµÄ³¬¼¶¿ØÖÆÀà£¬µ¥ÊµÀı
+ * CenterArduinoçš„è¶…çº§æ§åˆ¶ç±»ï¼Œå•å®ä¾‹
  * @author luyiping
  *
  */
@@ -30,15 +30,15 @@ public class CenterArduinoController implements ArduinoController {
 	public final static char FLAG0 = 'o';
 	public final static char FLAG1 = 'p';
 	public final static char FLAG2 = 'q';
-	// ¶¨ÒåµÄflagÔÚaddControlÖĞĞèÒª¸ú½ø
+	// å®šä¹‰çš„flagåœ¨addControlä¸­éœ€è¦è·Ÿè¿›
 
 	// clock
-	public final static char READY = 'd'; // ÓÉarduino·µ»Ø ±íÊ¾Ê±ÖÓÒÑ¾­¸´Î»
+	public final static char READY = 'd'; // ç”±arduinoè¿”å› è¡¨ç¤ºæ—¶é’Ÿå·²ç»å¤ä½
 	public final static char STOP = 'E';
 	public final static char FORWARD = 'f';
 	public final static char SPEEDFORWARD = 'g';
 	public final static char SPEEDBACKWORD = 'h';
-	public final static char CLOCKREADY = 'i'; // Ê±ÖÓ¸´Î» Çø±ğÓÚSPEEDBACKWORD ºÍREADY
+	public final static char CLOCKREADY = 'i'; // æ—¶é’Ÿå¤ä½ åŒºåˆ«äºSPEEDBACKWORD å’ŒREADY
 
 	// av
 	public final static char AVSTOP = 'd';
@@ -51,19 +51,19 @@ public class CenterArduinoController implements ArduinoController {
 	// all for clock,av,wire
 	public final static char LOCALFIRST = 'x';
 
-	// ´®¿Ú×´Ì¬
+	// ä¸²å£çŠ¶æ€
 	public final static int NOT_WORK = 20;
 	public final static int IS_WORK = 21;
 	public final static int NOT_OWNED = 22;
 	public final static int NOT_EXIST = 22;
 
-	// ¿ØÖÆÍê³É×´Ì¬
+	// æ§åˆ¶å®ŒæˆçŠ¶æ€
 	public final static int CONTROL_SUCCESS = 30;
 	public final static int CONTROL_OVERTIME = 31;
 	public final static int CONTROL_REPLACE = 32;
 	public final static int CONTROL_CONFIRM = 33;
 
-	// ¿ØÖÆ·µ»Ø
+	// æ§åˆ¶è¿”å›
 	public final static int CONTROL_FAIL = 60;
 	public final static int CONTROL_WAIT = 61;
 	public final static int CONTROL_SENDED = 62;
@@ -71,47 +71,47 @@ public class CenterArduinoController implements ArduinoController {
 	// timeschedule
 	public final static long CONTROLSCHEDULE = 1000;
 
-	// ¶¨Òå¾²Ì¬µ¥Àı
+	// å®šä¹‰é™æ€å•ä¾‹
 	private static final CenterArduinoController controlCenter = new CenterArduinoController();
-	// ÓÃÓÚ»Øµ÷µÄÏß³Ì³Ø
+	// ç”¨äºå›è°ƒçš„çº¿ç¨‹æ± 
 	private ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
-	// ÖÜÆÚÔËĞĞÏß³Ì
+	// å‘¨æœŸè¿è¡Œçº¿ç¨‹
 	private ScheduledExecutorService scheduledThreadPool = Executors
 			.newSingleThreadScheduledExecutor();
-	// ±äÁ¿³ØµÄÒıÓÃ
+	// å˜é‡æ± çš„å¼•ç”¨
 	private VariablePool variablePool = VariablePool.getVariablePool();
-	// ¶ÔÓ¦µÄArduinoID
+	// å¯¹åº”çš„ArduinoID
 	private int myArduinoID = VariablePool.ARDUINO_CENTER;
-	// ËùÓĞController
+	// æ‰€æœ‰Controller
 	private Controller generalController = new Controller(FLAG0);
 	private Controller clockController = new Controller(LOCALFIRST);
 	private Controller avController = new Controller(LOCALFIRST);
 	private Controller wireController = new Controller(LOCALFIRST);
-	// ¼ÇÂ¼×îºóÒ»´Î¿ØÖÆµÄÊ±¼ä
+	// è®°å½•æœ€åä¸€æ¬¡æ§åˆ¶çš„æ—¶é—´
 	private long lastControlTime = 0;
-	// ´®¿ÚÍ¨Ñ¶¶ÔÏó
+	// ä¸²å£é€šè®¯å¯¹è±¡
 	private SerialConnector port;
-	// ´®¿ÚÃû³Æ
+	// ä¸²å£åç§°
 	public String portName;
-	// Ä¬ÈÏ´®¿Ú×´Ì¬Îª²»´æÔÚ,Ô­×Ó²Ù×÷
+	// é»˜è®¤ä¸²å£çŠ¶æ€ä¸ºä¸å­˜åœ¨,åŸå­æ“ä½œ
 	private volatile int portStatus = NOT_EXIST;
-	// ÊÇ·ñÖÜÆÚÖ´ĞĞ£¬ÓÃÓÚÖÜÆÚÔËĞĞÏß³ÌÄÚÅĞ¶Ï
+	// æ˜¯å¦å‘¨æœŸæ‰§è¡Œï¼Œç”¨äºå‘¨æœŸè¿è¡Œçº¿ç¨‹å†…åˆ¤æ–­
 	private volatile boolean isSchedule = false;
-	// ÊÇ·ñ¸üĞÂ×´Ì¬£¬ÓÃ»§updateÊÇÅĞ¶Ï
+	// æ˜¯å¦æ›´æ–°çŠ¶æ€ï¼Œç”¨æˆ·updateæ˜¯åˆ¤æ–­
 	private volatile boolean isUpdated = false;
 	
-	// ¶Ôcontroller²Ù×÷µÄËø
+	// å¯¹controlleræ“ä½œçš„é”
 	private byte[] controlLock = new byte[0];
 
 	/**
-	 * Ë½ÓĞ¹¹Ôìº¯Êı
+	 * ç§æœ‰æ„é€ å‡½æ•°
 	 */
 	private CenterArduinoController() {
 		port = new SerialConnector(this);
 	}
 
 	/**
-	 * »ñµÃÊµÀıÒıÓÃ
+	 * è·å¾—å®ä¾‹å¼•ç”¨
 	 * 
 	 * @return
 	 */
@@ -121,7 +121,7 @@ public class CenterArduinoController implements ArduinoController {
 
 	@Override
 	public synchronized int startControl(String myPort) {
-		int currentstatus = portStatus;// ÓÃÓÚ¼ÇÂ¼Ö´ĞĞ²Ù×÷ºóµÄ×´Ì¬£¬·ÀÖ¹È«¾Ö±äÁ¿±ä¶¯
+		int currentstatus = portStatus;// ç”¨äºè®°å½•æ‰§è¡Œæ“ä½œåçš„çŠ¶æ€ï¼Œé˜²æ­¢å…¨å±€å˜é‡å˜åŠ¨
 		portName = myPort;
 		setPortStatus(port.init(portName));
 		currentstatus = setPortStatus(port.open());
@@ -130,7 +130,7 @@ public class CenterArduinoController implements ArduinoController {
 				@Override
 				public void run() {
 					if (isSchedule && portStatus == IS_WORK) {
-						// ¶¨Ê±½øĞĞ×´Ì¬¸üĞÂ¡¢·¢ËÍÖ¸Áî
+						// å®šæ—¶è¿›è¡ŒçŠ¶æ€æ›´æ–°ã€å‘é€æŒ‡ä»¤
 						updateData();
 						sendCommand();
 					}
@@ -143,10 +143,10 @@ public class CenterArduinoController implements ArduinoController {
 
 	@Override
 	public synchronized int stopControl() {
-		int currentstatus = portStatus;// ÓÃÓÚ¼ÇÂ¼Ö´ĞĞ²Ù×÷ºóµÄ×´Ì¬£¬·ÀÖ¹È«¾Ö±äÁ¿±ä¶¯
+		int currentstatus = portStatus;// ç”¨äºè®°å½•æ‰§è¡Œæ“ä½œåçš„çŠ¶æ€ï¼Œé˜²æ­¢å…¨å±€å˜é‡å˜åŠ¨
 		if (isSchedule) {
 			isSchedule = false;
-			// ÑÓÊ±£¬ÒÔÈ·±£Ïß³ÌshutdownÊ±´®¿Ú²»ÔÚ±»µ÷ÓÃ
+			// å»¶æ—¶ï¼Œä»¥ç¡®ä¿çº¿ç¨‹shutdownæ—¶ä¸²å£ä¸åœ¨è¢«è°ƒç”¨
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
@@ -155,9 +155,9 @@ public class CenterArduinoController implements ArduinoController {
 			scheduledThreadPool.shutdown();
 		}
 		currentstatus = setPortStatus(port.close());
-		// ¶Ôcontroller²Ù×÷Ç°ĞèÒªÏÈ»ñµÃËø
+		// å¯¹controlleræ“ä½œå‰éœ€è¦å…ˆè·å¾—é”
 		synchronized (controlLock) {
-			// Èç¹ûÉĞÓĞÎ´Íê³ÉÖ¸Áî£¬°´ÕÕ±»Ìæ´úÇé¿ö»Øµ÷
+			// å¦‚æœå°šæœ‰æœªå®ŒæˆæŒ‡ä»¤ï¼ŒæŒ‰ç…§è¢«æ›¿ä»£æƒ…å†µå›è°ƒ
 			callback(generalController, CONTROL_REPLACE);
 			callback(clockController, CONTROL_REPLACE);
 			callback(avController, CONTROL_REPLACE);
@@ -170,17 +170,17 @@ public class CenterArduinoController implements ArduinoController {
 	public synchronized int addControl(String thisType, long thisDuration,
 			char thisCommand, char thisTegart, char thisConfirm,
 			ControlCallback thisCallback) {
-		// ´®¿ÚÕı³£¹¤×÷Ê±ÊÜÀí
+		// ä¸²å£æ­£å¸¸å·¥ä½œæ—¶å—ç†
 		if (portStatus == IS_WORK) {
-			// ¶Ôcontroller²Ù×÷Ç°ĞèÒªÏÈ»ñµÃËø
+			// å¯¹controlleræ“ä½œå‰éœ€è¦å…ˆè·å¾—é”
 			synchronized (controlLock) {
-				// Ê×ÏÈÅĞ¶ÏÀàĞÍ£»Èç¹ûÔ­controller´æÔÚ»Øµ÷£¬Ôò»Øµ÷²¢¸æÖª±»È¡´ú£»Æäºó¶Ôcontroller½øĞĞ¸³Öµ¡£
+				// é¦–å…ˆåˆ¤æ–­ç±»å‹ï¼›å¦‚æœåŸcontrollerå­˜åœ¨å›è°ƒï¼Œåˆ™å›è°ƒå¹¶å‘ŠçŸ¥è¢«å–ä»£ï¼›å…¶åå¯¹controllerè¿›è¡Œèµ‹å€¼ã€‚
 				switch (thisType) {
 				case GENERAL:
 					callback(generalController, CONTROL_REPLACE);
 					generalController.setControl(thisDuration, thisCommand,
 							thisTegart, thisConfirm, thisCallback);
-					// Èç¹ûÎªflag£¬ĞèÒª¶îÍâÉè¶¨Ä¬ÈÏÖµ
+					// å¦‚æœä¸ºflagï¼Œéœ€è¦é¢å¤–è®¾å®šé»˜è®¤å€¼
 					if (thisCommand == FLAG0 || thisCommand == FLAG1
 							|| thisCommand == FLAG2)
 						generalController.defaultCommand = thisCommand;
@@ -203,9 +203,9 @@ public class CenterArduinoController implements ArduinoController {
 				default:
 					break;
 				}
-				lastControlTime = 0;// ÇåÁãÊ±¼äÒÔÈÃ¿ØÖÆÖ¸ÁîÄÜÁ¢¿Ì±»·¢ËÍ
+				lastControlTime = 0;// æ¸…é›¶æ—¶é—´ä»¥è®©æ§åˆ¶æŒ‡ä»¤èƒ½ç«‹åˆ»è¢«å‘é€
 			}
-			return sendCommand();// ·¢ËÍÖ¸Áî²¢µÃµ½´®¿ÚÁãÊ±×´Ì¬
+			return sendCommand();// å‘é€æŒ‡ä»¤å¹¶å¾—åˆ°ä¸²å£é›¶æ—¶çŠ¶æ€
 		}
 		return portStatus;
 	}
@@ -216,14 +216,14 @@ public class CenterArduinoController implements ArduinoController {
 	}
 	
 	/**
-	 * ½«Ê¶±ğcurrentstatusÖµ£¬¼ÇÂ¼×´¿ö×´Ì¬£¬²¢¸ù¾İÊµ¼ÊÇé¿ö·µ»Ø³Ö¾Ã×´Ì¬/ÁãÊ±×´Ì¬
+	 * å°†è¯†åˆ«currentstatuså€¼ï¼Œè®°å½•çŠ¶å†µçŠ¶æ€ï¼Œå¹¶æ ¹æ®å®é™…æƒ…å†µè¿”å›æŒä¹…çŠ¶æ€/é›¶æ—¶çŠ¶æ€
 	 * 
 	 * @param currentstatus
 	 * @return
 	 */
 	private int setPortStatus(int currentstatus) {
 		if (currentstatus == SerialConnector.COM_NOT_INIT)
-			currentstatus = port.init(portName);// ¼ì²éµ½»¹Ã»initÊ±×Ô¶¯init
+			currentstatus = port.init(portName);// æ£€æŸ¥åˆ°è¿˜æ²¡initæ—¶è‡ªåŠ¨init
 		switch (currentstatus) {
 		case SerialConnector.COM_CLOSE:
 			portStatus = NOT_WORK;
@@ -248,7 +248,7 @@ public class CenterArduinoController implements ArduinoController {
 	}
 
 	/**
-	 * Ò»°ãÓÉscheduledThreadPoolÖĞµÄ¶¨Ê±Æ÷µ÷ÓÃ
+	 * ä¸€èˆ¬ç”±scheduledThreadPoolä¸­çš„å®šæ—¶å™¨è°ƒç”¨
 	 * 
 	 */
 	private void updateData() {
@@ -257,11 +257,11 @@ public class CenterArduinoController implements ArduinoController {
 				isUpdated = false;
 				newReadList.addAll(port.read());
 			if (!newReadList.isEmpty()) {
-				// ÒÀ´Î¶Ôarduino·µ»ØµÄµÄ×´Ì¬Öµ½øĞĞ·ÖÎö£¬²¢×÷ÏàÓ¦´¦Àí
+				// ä¾æ¬¡å¯¹arduinoè¿”å›çš„çš„çŠ¶æ€å€¼è¿›è¡Œåˆ†æï¼Œå¹¶ä½œç›¸åº”å¤„ç†
 				for (String s : newReadList) {
 					boolean isValid = false;
 					char general = 'a', clock = 'a', av = 'a', wire = 'a';
-					// ·µ»ØÖµĞèÒªÊÇÎåÎ»£¬²¢ÇÒ×îºóÒ»Î»ÊÇĞ£ÑéÎ»
+					// è¿”å›å€¼éœ€è¦æ˜¯äº”ä½ï¼Œå¹¶ä¸”æœ€åä¸€ä½æ˜¯æ ¡éªŒä½
 					if (s.length() == 5) {
 						general = s.charAt(0);
 						clock = s.charAt(1);
@@ -271,11 +271,11 @@ public class CenterArduinoController implements ArduinoController {
 						if (check == s.charAt(4))
 							isValid = true;
 					}
-					// ÑéÖ¤·µ»ØµÄĞÅÏ¢ºÏ·¨ºó¶Ô±¾µØ×´Ì¬½øĞĞ¸üĞÂ£¬²¢¸ù¾İÇé¿ö³¢ÊÔ»Øµ÷
+					// éªŒè¯è¿”å›çš„ä¿¡æ¯åˆæ³•åå¯¹æœ¬åœ°çŠ¶æ€è¿›è¡Œæ›´æ–°ï¼Œå¹¶æ ¹æ®æƒ…å†µå°è¯•å›è°ƒ
 					if (isValid) {
 						ArrayList<Character> statusList = new ArrayList<Character>();
 						boolean isChange = false;
-						// ¶Ôcontroller²Ù×÷Ç°ĞèÒªÏÈ»ñµÃËø
+						// å¯¹controlleræ“ä½œå‰éœ€è¦å…ˆè·å¾—é”
 						synchronized (controlLock) {
 							isChange |= (generalController.status != general);
 							generalController.status = general;
@@ -293,7 +293,7 @@ public class CenterArduinoController implements ArduinoController {
 								statusList.add(wireController.status);
 							}
 
-							// ÅĞ¶ÏÊÇ·ñ·ûºÏConfirmÌõ¼ş£¬²¢³¢ÊÔ»Øµ÷
+							// åˆ¤æ–­æ˜¯å¦ç¬¦åˆConfirmæ¡ä»¶ï¼Œå¹¶å°è¯•å›è°ƒ
 							if (generalController.isConfirm())
 								callback(generalController, CONTROL_CONFIRM);
 							if (clockController.isConfirm())
@@ -303,7 +303,7 @@ public class CenterArduinoController implements ArduinoController {
 							if (wireController.isConfirm())
 								callback(wireController, CONTROL_CONFIRM);
 
-							// ÅĞ¶ÏÊÇ·ñ·ûºÏTegartÌõ¼ş£¬²¢³¢ÊÔ»Øµ÷
+							// åˆ¤æ–­æ˜¯å¦ç¬¦åˆTegartæ¡ä»¶ï¼Œå¹¶å°è¯•å›è°ƒ
 							if (generalController.isTegart())
 								callback(generalController, CONTROL_SUCCESS);
 							if (clockController.isTegart())
@@ -313,7 +313,7 @@ public class CenterArduinoController implements ArduinoController {
 							if (wireController.isTegart())
 								callback(wireController, CONTROL_SUCCESS);
 						}
-						// ×´Ì¬±ä»¯Ê±update±äÁ¿³Ø
+						// çŠ¶æ€å˜åŒ–æ—¶updateå˜é‡æ± 
 						if (isChange) {
 							variablePool.updateFromArduino(myArduinoID,
 									statusList);
@@ -323,25 +323,25 @@ public class CenterArduinoController implements ArduinoController {
 					}
 
 				}
-				System.out.println("¶Áµ½Êı¾İ£¡");
+				System.out.println("è¯»åˆ°æ•°æ®ï¼");
 			}
 		}
 	}
 
 	/**
-	 * ¸ù¾İcontroller·¢ËÍÖ¸Áî
+	 * æ ¹æ®controllerå‘é€æŒ‡ä»¤
 	 * 
-	 * @return ·¢ËÍºó´®¿Ú×´Ì¬
+	 * @return å‘é€åä¸²å£çŠ¶æ€
 	 */
 	private int sendCommand() {
-		int currentstatus = portStatus;//ÓÃÓÚ¼ÇÂ¼Ö´ĞĞ²Ù×÷ºóµÄ×´Ì¬£¬·ÀÖ¹È«¾Ö±äÁ¿±ä¶¯
+		int currentstatus = portStatus;//ç”¨äºè®°å½•æ‰§è¡Œæ“ä½œåçš„çŠ¶æ€ï¼Œé˜²æ­¢å…¨å±€å˜é‡å˜åŠ¨
 		long curtime = System.currentTimeMillis();
-		// ĞèÒª³¬¹ı¼ä¸ôÖÜÆÚ£¬²ÅÖ´ĞĞÖÜÆÚÈÎÎñ
+		// éœ€è¦è¶…è¿‡é—´éš”å‘¨æœŸï¼Œæ‰æ‰§è¡Œå‘¨æœŸä»»åŠ¡
 		if (curtime - lastControlTime > CONTROLSCHEDULE) {
-			// ¿ØÖÆÖ¸ÁîÒÔcÆğÍ·£¬¹²ÎåÎ»£¬×îºóÒ»Î»ÊÇĞ£ÑéÎ»
+			// æ§åˆ¶æŒ‡ä»¤ä»¥cèµ·å¤´ï¼Œå…±äº”ä½ï¼Œæœ€åä¸€ä½æ˜¯æ ¡éªŒä½
 			String myCommand = "c";
 			char general = 'a', clock = 'a', av = 'a', wire = 'a';
-			// ¶Ôcontroller²Ù×÷Ç°ĞèÒªÏÈ»ñµÃËø
+			// å¯¹controlleræ“ä½œå‰éœ€è¦å…ˆè·å¾—é”
 			synchronized (controlLock) {
 				general = getCommand(generalController, curtime);
 				myCommand += general;
@@ -352,7 +352,7 @@ public class CenterArduinoController implements ArduinoController {
 				wire = getCommand(wireController, curtime);
 				myCommand += wire;
 
-				// Ğ£ÑéÎ»
+				// æ ¡éªŒä½
 				char check = (char) (general + clock + av + wire - 388);
 				myCommand += check;
 				currentstatus = setPortStatus(port.write(myCommand));
@@ -365,11 +365,11 @@ public class CenterArduinoController implements ArduinoController {
 	}
 
 	/**
-	 * »ñµÃcontrollerµÄcommend£¬²¢ÇÒ½øĞĞ³¬Ê±ÅĞ¶Ï ×¢Òâ£ºĞèÒªÔÚ»ñµÃcontrollerËøµÄ·½·¨/·½·¨¿éÖĞµ÷ÓÃ
+	 * è·å¾—controllerçš„commendï¼Œå¹¶ä¸”è¿›è¡Œè¶…æ—¶åˆ¤æ–­ æ³¨æ„ï¼šéœ€è¦åœ¨è·å¾—controlleré”çš„æ–¹æ³•/æ–¹æ³•å—ä¸­è°ƒç”¨
 	 * 
 	 * @param thisController
 	 * @param curTime
-	 * @return ¿ØÖÆÖ¸Áî
+	 * @return æ§åˆ¶æŒ‡ä»¤
 	 */
 	private char getCommand(Controller thisController, long curTime) {
 		char nowCommand;
@@ -390,16 +390,16 @@ public class CenterArduinoController implements ArduinoController {
 	}
 
 	/**
-	 * ³¢ÊÔ½øĞĞ»Øµ÷£¬²¢¸ù¾İÇé¿öÖØÖÃcontroller ×¢Òâ£ºĞèÒªÔÚ»ñµÃcontrollerËøµÄ·½·¨/·½·¨¿éÖĞµ÷ÓÃ
+	 * å°è¯•è¿›è¡Œå›è°ƒï¼Œå¹¶æ ¹æ®æƒ…å†µé‡ç½®controller æ³¨æ„ï¼šéœ€è¦åœ¨è·å¾—controlleré”çš„æ–¹æ³•/æ–¹æ³•å—ä¸­è°ƒç”¨
 	 * 
 	 * @param thisController
 	 * @param controlType
 	 */
 	private void callback(Controller thisController, final int controlType) {
-		// ÖÕÌ¬ControllerÓÃÓÚĞÂ½¨Ïß³Ì
+		// ç»ˆæ€Controllerç”¨äºæ–°å»ºçº¿ç¨‹
 		final Controller callbackController = thisController;
 		if (thisController.controlCallback != null) {
-			// ´æÔÚcallback¶ÔÏóÊ±ÁíÆôÏÖ³¡µ÷ÓÃ¶ÔÏóµÄupdate·½·¨
+			// å­˜åœ¨callbackå¯¹è±¡æ—¶å¦å¯ç°åœºè°ƒç”¨å¯¹è±¡çš„updateæ–¹æ³•
 			cachedThreadPool.execute(new Runnable() {
 				@Override
 				public void run() {
@@ -407,7 +407,7 @@ public class CenterArduinoController implements ArduinoController {
 				}
 			});
 		}
-		// »Øµ÷ÀàĞÍÎªCONTROL_SUCCESS¡¢CONTROL_OVERTIME¡¢CONTROL_REPLACEÊ±ÖØÖÃcontroller
+		// å›è°ƒç±»å‹ä¸ºCONTROL_SUCCESSã€CONTROL_OVERTIMEã€CONTROL_REPLACEæ—¶é‡ç½®controller
 		if (controlType == CONTROL_SUCCESS || controlType == CONTROL_OVERTIME
 				|| controlType == CONTROL_REPLACE) {
 			thisController.resetControl();
@@ -415,7 +415,7 @@ public class CenterArduinoController implements ArduinoController {
 	}
 
 	/**
-	 * Ä¬ÈÏÖ¸Áî¡¢±¾ÂÖ¿ØÖÆ¿ªÊ¼Ê±¼ä¡¢ÊÇ·ñÒÑ¾­confirm¡¢±¾ÂÖ¿ØÖÆÊ±³¤/³¬Ê±¡¢¿ØÖÆÖ¸Áî¡¢Ä¿±ê¡¢È·ÈÏ¡¢µ±Ç°×´Ì¬
+	 * é»˜è®¤æŒ‡ä»¤ã€æœ¬è½®æ§åˆ¶å¼€å§‹æ—¶é—´ã€æ˜¯å¦å·²ç»confirmã€æœ¬è½®æ§åˆ¶æ—¶é•¿/è¶…æ—¶ã€æ§åˆ¶æŒ‡ä»¤ã€ç›®æ ‡ã€ç¡®è®¤ã€å½“å‰çŠ¶æ€
 	 * 
 	 * @author luyiping
 	 *
@@ -424,7 +424,7 @@ public class CenterArduinoController implements ArduinoController {
 		public char defaultCommand;
 		
 		public long startTime = 0;
-		public boolean isConfirmed=false;//Ä¿Ç°²ßÂÔ¸ù¾İisConfirmed½öconfirmÒ»´Î
+		public boolean isConfirmed=false;//ç›®å‰ç­–ç•¥æ ¹æ®isConfirmedä»…confirmä¸€æ¬¡
 		
 		public long duration = 0;
 		public char command = 0;
@@ -434,7 +434,7 @@ public class CenterArduinoController implements ArduinoController {
 		public ControlCallback controlCallback = null;
 
 		/**
-		 * ¹¹Ôìº¯Êı ´«ÈëÄ¬ÈÏÖ¸Áî
+		 * æ„é€ å‡½æ•° ä¼ å…¥é»˜è®¤æŒ‡ä»¤
 		 * 
 		 * @param thisCommand
 		 */
@@ -443,7 +443,7 @@ public class CenterArduinoController implements ArduinoController {
 		}
 
 		/**
-		 * ÖÃ¿Õ×´Ì¬±äÁ¿ ÉèÖÃcontroller
+		 * ç½®ç©ºçŠ¶æ€å˜é‡ è®¾ç½®controller
 		 * 
 		 * @param thisDuration
 		 * @param thisCommand
@@ -464,7 +464,7 @@ public class CenterArduinoController implements ArduinoController {
 		}
 
 		/**
-		 * ÅĞ¶ÏÊÇ·ñ´ïµ½confirm£¬Ã¿ÂÖ¿ØÖÆÖÁ¶à·µ»ØÒ»´Îtrue
+		 * åˆ¤æ–­æ˜¯å¦è¾¾åˆ°confirmï¼Œæ¯è½®æ§åˆ¶è‡³å¤šè¿”å›ä¸€æ¬¡true
 		 * @return
 		 */
 		public boolean isConfirm() {
@@ -478,7 +478,7 @@ public class CenterArduinoController implements ArduinoController {
 		}
 
 		/**
-		 * ÅĞ¶ÏÊÇ·ñ´ïµ½tegart
+		 * åˆ¤æ–­æ˜¯å¦è¾¾åˆ°tegart
 		 * 
 		 * @return
 		 */
@@ -487,7 +487,7 @@ public class CenterArduinoController implements ArduinoController {
 		}
 		
 		/**
-		 * ÖØÖÃController
+		 * é‡ç½®Controller
 		 */
 		public void resetControl() {
 			startTime = 0;

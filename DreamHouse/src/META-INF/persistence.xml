@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="1.0"
+             xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_version=1">
+<persistence-unit name="mysqlJPA" transaction-type="RESOURCE_LOCAL">
+    <!--指定JPA实现提供者，不指定就采用JavaEE服务器默认的JPA提供者，这里以HibernateJPA为例-->
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+    <properties>
+        <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>
+        <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
+        <property name="hibernate.connection.username" value="root"/>
+        <property name="hibernate.connection.password" value="weisuolao"/>
+        <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/dreamhouse"/>
+        <property name="hibernate.max_fetch_depth" value="3"/>
+        <property name="hibernate.hbm2ddl.auto" value="update"/>
+    </properties>
+</persistence-unit>
+</persistence>
