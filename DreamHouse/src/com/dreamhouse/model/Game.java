@@ -1,6 +1,8 @@
 package com.dreamhouse.model;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 表示一局游戏的数据结构。
@@ -50,6 +52,9 @@ public class Game {
     private long minigameEndTime;
     @Column(name = "minigame_result")
     private String minigameResult;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "game")// 级联保存、更新、删除、刷新;延迟加载
+    private Set<Player> players = new HashSet<Player>();
 
     public Game() {
     }
@@ -172,5 +177,23 @@ public class Game {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Set<Player> getPlayers() {
+        return players;
+    }
+
+    public void addPlayer(Player player) {
+        if (!players.contains(player)) {
+            players.add(player);
+            player.setGame(this);
+        }
+    }
+
+    public void removePlayer(Player player) {
+        if (players.contains(player)) {
+            player.setGame(null);
+            players.remove(player);
+        }
     }
 }

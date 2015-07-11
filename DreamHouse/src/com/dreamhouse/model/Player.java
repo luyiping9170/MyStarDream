@@ -12,9 +12,6 @@ public class Player {
     @Column(name = "Id")
     private long id;
 
-    @Column(name = "game_id")
-    private long gameId;
-
     @Column(name = "phone")
     private String phone;
 
@@ -30,6 +27,10 @@ public class Player {
     @Column(name = "description")
     private String description;
 
+    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, optional = true)
+    @JoinColumn(name="game_id")
+    private Game game;
+
     public Player() {
     }
 
@@ -39,14 +40,6 @@ public class Player {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public long getGameId() {
-        return gameId;
-    }
-
-    public void setGameId(long gameId) {
-        this.gameId = gameId;
     }
 
     public String getPhone() {
@@ -87,5 +80,13 @@ public class Player {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
     }
 }
